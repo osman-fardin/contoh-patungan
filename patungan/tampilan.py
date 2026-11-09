@@ -1,9 +1,4 @@
-"""Menampilkan data ke terminal dengan library Rich."""
-
-from rich.console import Console
-from rich.table import Table
-
-konsol = Console()
+"""Mengubah data menjadi teks dan baris tabel yang siap ditampilkan."""
 
 
 def format_rupiah(jumlah):
@@ -11,39 +6,43 @@ def format_rupiah(jumlah):
     return f"Rp{jumlah:,}".replace(",", ".")
 
 
-def tampilkan_pengeluaran(daftar_pengeluaran):
-    """Menampilkan semua pengeluaran dalam bentuk tabel."""
-    if not daftar_pengeluaran:
-        konsol.print("[yellow]Belum ada pengeluaran.[/yellow]")
-        return
+def teks_pengeluaran(item):
+    """Membuat satu baris ringkasan pengeluaran."""
+    jumlah = format_rupiah(item["jumlah"])
+    peserta = ", ".join(item["peserta"])
+    return (
+        f"**{item['keterangan']}** · {jumlah}  \n"
+        f"Ditalangin {item['pembayar']}, dibagi ke {peserta}"
+    )
 
-    tabel = Table(title="Daftar Pengeluaran")
-    tabel.add_column("Keterangan")
-    tabel.add_column("Dibayar oleh")
-    tabel.add_column("Jumlah", justify="right")
-    tabel.add_column("Dibagi ke")
 
-    for item in daftar_pengeluaran:
-        tabel.add_row(
-            item["keterangan"],
-            item["pembayar"],
-            format_rupiah(item["jumlah"]),
-            ", ".join(item["peserta"]),
+def baris_saldo(saldo):
+    """Membuat baris tabel saldo setiap anggota."""
+    baris = []
+    for nama, nilai in saldo.items():
+        if nilai > 0:
+            status = "Harus nerima"
+        elif nilai < 0:
+            status = "Harus bayar"
+        else:
+            status = "Udah impas"
+        baris.append(
+            {"Anggota": nama, "Status": status, "Jumlah": format_rupiah(abs(nilai))}
         )
-    konsol.print(tabel)
+    return baris
 
 
-def tampilkan_pelunasan(pelunasan):
-    """Menampilkan siapa harus membayar kepada siapa."""
-    if not pelunasan:
-        konsol.print("[green]Semua sudah lunas.[/green]")
-        return
+def baris_pelunasan(pelunasan):
+    """Membuat baris tabel siapa bayar ke siapa."""
+    return [
+        {"Dari": dari, "Ke": ke, "Jumlah": format_rupiah(jumlah)}
+        for dari, ke, jumlah in pelunasan
+    ]
 
-    tabel = Table(title="Siapa Bayar ke Siapa")
-    tabel.add_column("Dari")
-    tabel.add_column("Ke")
-    tabel.add_column("Jumlah", justify="right")
 
-    for dari, ke, jumlah in pelunasan:
-        tabel.add_row(dari, ke, format_rupiah(jumlah))
-    konsol.print(tabel)
+def teks_pelunasan(pelunasan):
+    """Membuat ringkasan yang siap dikirim ke grup chat."""
+    return "\n".join(
+        f"{dari} bayar ke {ke}: {format_rupiah(jumlah)}"
+        for dari, ke, jumlah in pelunasan
+    )
