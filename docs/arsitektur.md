@@ -1,20 +1,33 @@
 # Arsitektur Patungan
 
-Programnya dibagi jadi empat bagian, dan tiap bagian punya satu tugas aja. Jadi anggota kelompok bisa ngerjain file yang beda tanpa bentrok.
+Patungan itu web app yang seluruhnya ditulis pakai Python dengan Streamlit. Kodenya dibagi per tugas, jadi tiap anggota bisa ngerjain file yang beda tanpa bentrok.
 
 ```mermaid
 flowchart TD
-    M[main.py<br/>menu dan input] --> H[hitung.py<br/>perhitungan]
-    M --> P[penyimpanan.py<br/>baca dan tulis JSON]
-    M --> T[tampilan.py<br/>tabel di terminal]
+    A[app.py<br/>halaman web] --> K[kelola.py<br/>aturan ubah data]
+    A --> H[hitung.py<br/>perhitungan]
+    A --> P[penyimpanan.py<br/>baca dan tulis JSON]
+    A --> T[tampilan.py<br/>format teks dan tabel]
 ```
 
-| File | Tugasnya | Boleh baca input? |
+| File | Tugasnya | Boleh pakai Streamlit? |
 | --- | --- | --- |
-| `main.py` | Jalanin menu dan nerima input | Boleh |
+| `app.py` | Bikin halaman, form, dan tombol | Boleh |
+| `patungan/kelola.py` | Ngecek input dan ngubah data | Nggak |
 | `patungan/hitung.py` | Ngitung saldo dan pelunasan | Nggak |
 | `patungan/penyimpanan.py` | Baca dan tulis file JSON | Nggak |
-| `patungan/tampilan.py` | Nampilin tabel | Nggak |
+| `patungan/tampilan.py` | Nyiapin teks dan isi tabel | Nggak |
+
+Cuma `app.py` yang kenal Streamlit. Bagian lainnya Python biasa, jadi gampang dites.
+
+## Yang terjadi pas tombol dipencet
+
+Streamlit bakal ngejalanin ulang `app.py` dari atas tiap ada interaksi. Alurnya gini:
+
+1. `app.py` baca data dari file JSON.
+2. Pas form dikirim, `kelola.py` ngecek input dan ngubah data.
+3. Kalau inputnya salah, halaman nampilin pesan error.
+4. Kalau bener, data disimpen dan halaman dimuat ulang.
 
 ## Cara ngitungnya
 
