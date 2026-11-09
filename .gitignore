@@ -9,6 +9,7 @@ venv/
 
 # Rahasia: jangan pernah dikirim ke GitHub
 .env
+.streamlit/secrets.toml
 db.sqlite3
 
 # Data pengguna yang dibuat saat aplikasi berjalan
