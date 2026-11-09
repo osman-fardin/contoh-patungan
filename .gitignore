@@ -1,0 +1,21 @@
+# File buatan Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Lingkungan virtual
+.venv/
+venv/
+
+# Rahasia: jangan pernah dikirim ke GitHub
+.env
+db.sqlite3
+
+# Data pengguna yang dibuat saat aplikasi berjalan
+data/
+
+# Pengaturan pribadi editor dan sistem operasi
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
